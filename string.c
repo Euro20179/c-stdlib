@@ -259,3 +259,11 @@ void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...) {
     int len = strnlen(buf, maxlen);
     string_concat(str, buf, len);
 }
+
+void string_replace(string* str, char needle, char repl) {
+    for(size_t i = 0; i < string_len(str); i++) {
+        if(str->data[i] == needle) {
+            str->data[i] = repl;
+        }
+    }
+}

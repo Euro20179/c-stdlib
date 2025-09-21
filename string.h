@@ -97,3 +97,5 @@ size_t string_len(string*);
 /// It is simply the maximum possible that could be allocated
 ///It only allocates what is necessary after snprintf is called.
 void string_nconcatf(string*, size_t maxlen, const char* fmt, ...);
+
+void string_replace(string*, char needle, char repl);
