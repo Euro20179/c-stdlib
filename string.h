@@ -18,8 +18,8 @@ typedef struct{
 ///`string_del` must be called to free the string's memory
 void string_new(string* strout, size_t len);
 
-///creates a new string
-///caller MUST free the new string
+///Same as string_new but allocates a string on the heap.
+///caller MUST call string_del on the string
 string* string_new2(size_t len);
 
 ///Deletes string
