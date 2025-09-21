@@ -25,6 +25,17 @@ string* string_new2(size_t len) {
     return out;
 }
 
+void string_del2(string* str)
+{
+    if (str->initialized != true)
+        return;
+    str->initialized = 0;
+    str->len = 0;
+    str->allocated = 0;
+    free(str->data);
+    free(str);
+}
+
 void string_del(string* str)
 {
     if (str->initialized != true)

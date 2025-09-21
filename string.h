@@ -19,11 +19,15 @@ typedef struct{
 void string_new(string* strout, size_t len);
 
 ///Same as string_new but allocates a string on the heap.
-///caller MUST call string_del on the string
+///caller MUST call string_del2 on the string
 string* string_new2(size_t len);
+
+///deletes a string created with string_new2
+void string_del2(string* str);
 
 ///Deletes string
 void string_del(string* str);
+
 
 ///sets the string to text
 ///*DOES NOT* allocate more memory if text is larger than str's remaining space
