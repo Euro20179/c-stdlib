@@ -44,11 +44,11 @@ int bucket_remove(bucket*, size_t idx);
 //returns -1 if idx is out of bounds
 int bucket_at(bucket*, size_t idx, void* out);
 
-//returns a pointer to the item at idx
+//returns the item at idx
 //returns NULL if idx is out of bounds
 void* bucket_get_ref(bucket*, size_t idx);
 
-//returns the value at idx
+//returns the item at idx
 //returns NULL if idx is out of bounds
 void* bucket_get(bucket*, size_t idx);
 
