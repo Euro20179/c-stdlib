@@ -69,7 +69,8 @@ void string_split(string*, char sep, void* userdata, void(cb)(string*, size_t co
 
 void string_slice_suffix(string*, size_t amount);
 
-//adds a NULL terminator to the end of str, then returns the raw data, effectively this makes a cstring
+///mutates str to turn it into a cstring.
+///effectively this means adding NULL to the end of the data in str
 char* string_mkcstr(string* str);
 
 //translate any occurance of from to to

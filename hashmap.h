@@ -25,6 +25,10 @@ void hashmap_new(hashmap*);
 
 void hashmap_del(hashmap*);
 
+///goes through each item in the hashmap, and calls a function so that you can delete the value
+///in the process also deletes the hashmap
+void hashmap_del_each(hashmap*, void(*)(void*));
+
 //if item is not found, return NULL
 void* hashmap_get(hashmap*, const char* key);
 

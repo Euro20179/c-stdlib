@@ -28,6 +28,22 @@ void hashmap_del(hashmap* map) {
     bucket_del(&map->items);
 }
 
+
+void hashmap_del_each(hashmap* map, void(cb)(void*)) {
+    for(int i = 0; i < bucket_size(&map->items); i++) {
+        if(!bucket_full_at(&map->items, i)) continue;
+
+        llist* ref = (llist*)bucket_get(&map->items, i);
+        llist_node* cur = ref->head;
+        while(cur != NULL) {
+            cb(((struct _hashmap_item*)cur->data)->value);
+            cur = cur->next;
+        }
+        llist_del(ref);
+    }
+    bucket_del(&map->items);
+}
+
 size_t get_idx_from_hash(hashmap* map, hash_t h) {
     return h % bucket_size(&map->items);
 }
