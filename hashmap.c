@@ -123,3 +123,16 @@ hash_t hash_str(const char *str) {
     }
     return hash;
 }
+
+void hashmap_foreach(hashmap * map, void (cb)(void *)) {
+    for(int i = 0; i < bucket_size(&map->items); i++) {
+        if(!bucket_full_at(&map->items, i)) continue;
+
+        llist* ref = (llist*)bucket_get(&map->items, i);
+        llist_node* cur = ref->head;
+        while(cur != NULL) {
+            cb(((struct _hashmap_item*)cur->data)->value);
+            cur = cur->next;
+        }
+    }
+}

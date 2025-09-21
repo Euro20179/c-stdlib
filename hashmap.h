@@ -36,3 +36,5 @@ int hashmap_unset(hashmap*, const char* key);
 bool hashmap_exists(hashmap*, const char* key);
 
 hash_t hash_str(const char* str);
+
+void hashmap_foreach(hashmap*, void(*)(void*));
