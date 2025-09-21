@@ -1,5 +1,6 @@
 #pragma once
 #include <stddef.h>
+#include <stdint.h>
 
 typedef struct llist_node llist_node;
 
@@ -30,3 +31,7 @@ void llist_append(llist*, void* data);
 void llist_remove(llist*, size_t idx);
 
 void llist_clear(llist*);
+
+///gets the item at the nth index (head is the 0th index)
+///returns NULL if out of bounds
+void* llist_at(llist*, size_t n);

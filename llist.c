@@ -1,4 +1,5 @@
 #include "llist.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -55,4 +56,18 @@ void llist_remove(llist* l, size_t idx) {
         cur = cur->next;
     }
     llist_node_destroy(cur);
+}
+
+void* llist_at(llist* l, size_t n) {
+    llist_node* cur = l->head;
+
+    size_t i = 0;
+    while (i < n) {
+        if(cur->next == NULL) {
+            return NULL;
+        }
+        cur = cur->next;
+        i++;
+    }
+    return cur->data;
 }
