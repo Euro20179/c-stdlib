@@ -18,6 +18,10 @@ typedef struct{
 ///`string_del` must be called to free the string's memory
 void string_new(string* strout, size_t len);
 
+///creates a new string
+///caller MUST free the new string
+string* string_new2(size_t len);
+
 ///Deletes string
 void string_del(string* str);
 
@@ -70,3 +74,9 @@ char* string_mkcstr(string* str);
 
 //translate any occurance of from to to
 void string_tr(string*, char from, char to);
+
+//creates a copy of the string that is URI encoded
+//**NOTE**: the new string must be freed by the caller
+void string_uri_encode(string*, string* out);
+
+size_t string_len(string*);
