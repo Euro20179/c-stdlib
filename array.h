@@ -1,3 +1,4 @@
+#pragma once
 #include <stddef.h>
 
 typedef struct {
@@ -18,3 +19,5 @@ int array_append(array*, void* data);
 
 ///returns NULL on out of bounds
 void* array_at(array*, size_t idx);
+
+size_t array_len(array*);

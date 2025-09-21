@@ -47,3 +47,7 @@ void* array_at(array* arr, size_t idx) {
     }
     return arr->data + idx * arr->item_size;
 }
+
+size_t array_len(array* arr) {
+    return arr->len;
+}

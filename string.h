@@ -28,6 +28,12 @@ void string_del2(string* str);
 ///Deletes string
 void string_del(string* str);
 
+///creates a string from a c string
+///caller must call string_del2 on the new string
+///
+///n is maxlen EXCLUDING the \0
+string* string_from_cstr(const char*, size_t n);
+
 
 ///sets the string to text
 ///*DOES NOT* allocate more memory if text is larger than str's remaining space
@@ -85,3 +91,9 @@ void string_tr(string*, char from, char to);
 void string_uri_encode(string*, string* out);
 
 size_t string_len(string*);
+
+///concatenates to string using snprintf with a max len of maxlen
+///DOES NOT necessarily allocate maxlen worth of memory.
+/// It is simply the maximum possible that could be allocated
+///It only allocates what is necessary after snprintf is called.
+void string_nconcatf(string*, size_t maxlen, const char* fmt, ...);

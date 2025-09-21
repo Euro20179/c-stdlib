@@ -1,4 +1,5 @@
 #include "string.h"
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -129,6 +130,12 @@ char* string_mkcstr(string* str)
     return str->data;
 }
 
+string* string_from_cstr(const char* str, size_t n) {
+    string* s = string_new2(n);
+    memcpy(s->data, str, n);
+    return s;
+}
+
 void string_clear(string* str)
 {
     str->len = 0;
@@ -240,4 +247,15 @@ void string_uri_encode(string* str, string* out)
             string_concat_char(out, ch);
         }
     }
+}
+
+void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...) {
+    char buf[maxlen];
+    memset(buf, 0, maxlen);
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, maxlen, fmt, args);
+    va_end(args);
+    int len = strnlen(buf, maxlen);
+    string_concat(str, buf, len);
 }
