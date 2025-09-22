@@ -54,7 +54,9 @@ void string_concat(string* str, const char* text, size_t textlen)
         return;
     }
     if (textlen + str->len > str->allocated) {
-        string_extend(str, textlen);
+        if(string_extend(str, textlen)< 0) {
+            return;
+        }
     }
 
     memcpy(str->data + str->len, text, textlen);
@@ -64,7 +66,9 @@ void string_concat(string* str, const char* text, size_t textlen)
 void string2_concat(string* to, string* from)
 {
     if (from->len + to->len > to->allocated) {
-        string_extend(to, from->len);
+        if (string_extend(to, from->len) < 0) {
+            return;
+        }
     }
 
     memcpy(to->data + to->len, from->data, from->len);
@@ -101,18 +105,26 @@ void string_set_char_at(string* str, char c, int idx)
 void string_concat_char(string* str, char c)
 {
     if (str->len >= str->allocated) {
-        string_extend(str, str->allocated || 1);
+        if(string_extend(str, str->allocated || 1) < 0) {
+            return;
+        }
     }
     str->data[str->len] = c;
     str->len++;
 }
 
-void string_extend(string* str, size_t amount)
+int string_extend(string* str, size_t amount)
 {
     if (str->initialized != true)
-        return;
-    str->allocated += amount;
-    str->data = realloc(str->data, str->allocated);
+        return -1;
+    int new_amount = str->allocated + amount;
+    void* temp = realloc(str->data, new_amount);
+    if(temp == NULL) {
+        return -2;
+    }
+    str->allocated = new_amount;
+    str->data = temp;
+    return 0;
 }
 
 void string_to_cstr(string* str, char* out)
@@ -210,7 +222,9 @@ void string_tr(string* str, char from, char to)
 void string_cpy(string* to, string* from)
 {
     if (to->allocated < from->allocated) {
-        string_extend(to, from->len);
+        if(string_extend(to, from->len) < 0) {
+            return;
+        }
     }
     to->len = from->len;
     memcpy(to->data, from->data, from->len);
