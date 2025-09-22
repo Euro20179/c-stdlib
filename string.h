@@ -45,7 +45,10 @@ void string_cpy(string* to, string* from);
 
 void string_concat_char(string* str, char c);
 
-//allocates amount more bytes of memory
+///allocates amount more bytes of memory
+///returns 0 on success
+///returns -1 if string is uninitialized
+///returns -2 if it fails to get more memory for some reason
 int string_extend(string* str, size_t amount);
 
 //appends text of textlen length to str (allocating more memory if needed)
