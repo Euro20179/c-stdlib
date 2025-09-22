@@ -2,6 +2,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <uchar.h>
 
 //creates a stack allocated char buffer for string that is the correct size for string_to_cstr
 #define string_to_cstr_buf_create(name, str) char name[str.len + 1]
@@ -99,3 +100,7 @@ size_t string_len(string*);
 void string_nconcatf(string*, size_t maxlen, const char* fmt, ...);
 
 void string_replace(string*, char needle, char repl);
+
+struct string_format_info {
+    char ch;
+};

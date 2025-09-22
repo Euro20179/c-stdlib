@@ -17,7 +17,8 @@ void string_new(string* strout, size_t len)
     strout->initialized = true;
 }
 
-string* string_new2(size_t len) {
+string* string_new2(size_t len)
+{
     string* out = malloc(sizeof(string));
     out->data = calloc(len, 1);
     out->len = 0;
@@ -130,7 +131,8 @@ char* string_mkcstr(string* str)
     return str->data;
 }
 
-string* string_from_cstr(const char* str, size_t n) {
+string* string_from_cstr(const char* str, size_t n)
+{
     string* s = string_new2(n);
     memcpy(s->data, str, n);
     return s;
@@ -249,20 +251,28 @@ void string_uri_encode(string* str, string* out)
     }
 }
 
-void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...) {
+void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...)
+{
     char buf[maxlen];
     memset(buf, 0, maxlen);
     va_list args;
     va_start(args, fmt);
     vsnprintf(buf, maxlen, fmt, args);
     va_end(args);
-    int len = strnlen(buf, maxlen);
+    int len = 0;
+    for(int i = 0; i < maxlen; i++) {
+        if(buf[i] == 0) {
+            break;
+        }
+        len++;
+    }
     string_concat(str, buf, len);
 }
 
-void string_replace(string* str, char needle, char repl) {
-    for(size_t i = 0; i < string_len(str); i++) {
-        if(str->data[i] == needle) {
+void string_replace(string* str, char needle, char repl)
+{
+    for (size_t i = 0; i < string_len(str); i++) {
+        if (str->data[i] == needle) {
             str->data[i] = repl;
         }
     }

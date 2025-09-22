@@ -23,7 +23,7 @@ void array_del2(array* arr)
 
 int array_append(array* arr, void* data) {
     if (arr->len == arr->cap) {
-        void* buf = reallocarray(arr->data, arr->cap * 2, arr->item_size);
+        void* buf = realloc(arr->data, arr->cap * 2 * arr->item_size);
         if (buf == NULL) {
             return -1;
         }
