@@ -1,3 +1,17 @@
 This is my amazing™ standard library.
 
 See the header files for documentation.
+
+= Notes =
+
+1. all functions are namespaced, such as `hashmap_new()`, `string_new()`, `llist_append()` etc...
+2.
+    `*_new2()` allocates the struct itself on the heap while
+    `*_new()` asks for a pointer to a caller-defined value which can be
+    stack or heap allocated
+    a.
+        `*_new2()` must be deleted with `*_del2()`
+        and `*_new()` must be deleted with `*_del()`
+
+3. functions should generally work the same no matter what (dont break userspace)
+4. struct properties may change, break, etc... do not rely on them
