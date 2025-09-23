@@ -27,6 +27,9 @@ void hashmap_new(hashmap*);
 
 void hashmap_del(hashmap*);
 
+///returns: the number of items in the hashmap
+size_t hashmap_item_count(hashmap*);
+
 ///goes through each item in the hashmap, and calls a function so that you can delete the value
 ///in the process also deletes the hashmap
 void hashmap_del_each(hashmap*, void(*)(void*));
