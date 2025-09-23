@@ -5,7 +5,6 @@
 #include "string.h"
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -89,6 +88,12 @@ void hashmap_set(hashmap* map, const char* key, void* value)
         bucket_set(&map->items, idx, &i);
     } else {
         ref = (llist*)bucket_get_ref(&map->items, idx);
+
+        if(llist_find(ref, (char*)key) != -1) {
+            _hashmap_item_destroy(item);
+            return;
+        }
+
         llist_append(ref, item);
     }
 

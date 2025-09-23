@@ -32,6 +32,19 @@ void llist_remove(llist*, size_t idx);
 
 void llist_clear(llist*);
 
+///returns the index of data
+///returns -1 if not found
+///
+///NOTE: the comparison function simply checks if both pointers point to the same place
+///this means that if the same pointer is interpreted as 2 different ways be the caller intentionally
+///this will return true, despite the programmer treating the same pointer in 2 different ways
+///
+///eg:
+///int k = 3
+///double* z = &k
+///llist_find would say z == k because z == &k
+int64_t llist_find(llist*, void* data);
+
 ///gets the item at the nth index (head is the 0th index)
 ///returns NULL if out of bounds
 void* llist_at(llist*, size_t n);

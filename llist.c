@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 llist_node* llist_node_create(void* data) {
     llist_node* n = malloc(sizeof(llist_node));
@@ -70,4 +71,17 @@ void* llist_at(llist* l, size_t n) {
         i++;
     }
     return cur->data;
+}
+
+int64_t llist_find(llist* l, void* data) {
+    llist_node* cur = l->head;
+    int64_t idx = -1;
+    while(cur != NULL) {
+        idx++;
+        if(cur == data) {
+            break;
+        }
+        cur = cur->next;
+    }
+    return idx;
 }
