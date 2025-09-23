@@ -267,8 +267,7 @@ void string_uri_encode(string* str, string* out)
 
 void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...)
 {
-    char buf[maxlen];
-    memset(buf, 0, maxlen);
+    char* buf = calloc(maxlen, 1);
     va_list args;
     va_start(args, fmt);
     vsnprintf(buf, maxlen, fmt, args);
@@ -281,6 +280,7 @@ void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...)
         len++;
     }
     string_concat(str, buf, len);
+    free(buf);
 }
 
 void string_replace(string* str, char needle, char repl)
