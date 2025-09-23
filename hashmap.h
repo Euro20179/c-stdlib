@@ -2,8 +2,10 @@
 
 #include <stdint.h>
 
+#include "string.h"
 #include "bucket.h"
 #include "llist.h"
+#include "mem.h"
 
 typedef uint32_t hash_t;
 
@@ -29,14 +31,22 @@ void hashmap_del(hashmap*);
 ///in the process also deletes the hashmap
 void hashmap_del_each(hashmap*, void(*)(void*));
 
-//if item is not found, return NULL
+///if item is not found, return NULL
 void* hashmap_get(hashmap*, const char* key);
 
+///WARNING: this function calls strlen() on key, be sure to do input validation on key
+///NOTE: the data in key is coppied
 void hashmap_set(hashmap*, const char* key, void* value);
-//returns -1 if the key is not in the map
+
+///key MUST be allocated with string_new2()
+///ownership is handed to hashmap after this call
+///NOTE: the data in key is coppied
+void hashmap_set_safe(hashmap*, moved(string*) key, void*);
+
+///returns -1 if the key is not in the map
 int hashmap_unset(hashmap*, const char* key);
 
-//checks if key exists in the map
+///checks if key exists in the map
 bool hashmap_exists(hashmap*, const char* key);
 
 hash_t hash_str(const char* str);

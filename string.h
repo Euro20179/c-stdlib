@@ -82,10 +82,12 @@ char string_at(string* str, size_t pos);
 //userdata will be passed as the last arg to cb
 void string_split(string*, char sep, void* userdata, void(cb)(string*, size_t count, void*));
 
+///removes amount chars from the end of string
 void string_slice_suffix(string*, size_t amount);
 
 ///mutates str to turn it into a cstring.
 ///effectively this means adding NULL to the end of the data in str
+///WARNING: calling string_del*() on str will also free the resulting cstr
 char* string_mkcstr(string* str);
 
 //translate any occurance of from to to
@@ -95,6 +97,7 @@ void string_tr(string*, char from, char to);
 //**NOTE**: the new string must be freed by the caller
 void string_uri_encode(string*, string* out);
 
+///gets the length of string
 size_t string_len(string*);
 
 ///concatenates to string using snprintf with a max len of maxlen
@@ -103,6 +106,7 @@ size_t string_len(string*);
 ///It only allocates what is necessary after snprintf is called.
 void string_nconcatf(string*, size_t maxlen, const char* fmt, ...);
 
+///replaces all instances of needle with repl
 void string_replace(string*, char needle, char repl);
 
 struct string_format_info {

@@ -1,6 +1,9 @@
 #include "hashmap.h"
 #include "bucket.h"
 #include "llist.h"
+#include "mem.h"
+#include "string.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,6 +53,12 @@ void hashmap_del_each(hashmap* map, void(cb)(void*)) {
 
 size_t get_idx_from_hash(hashmap* map, hash_t h) {
     return h % bucket_size(&map->items);
+}
+
+void hashmap_set_safe(hashmap* map, moved(string*) key, void* value) {
+    const char* data = string_mkcstr(key);
+    hashmap_set(map, data, value);
+    string_del2(key);
 }
 
 void hashmap_set(hashmap * map, const char *key, void *value) {
