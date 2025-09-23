@@ -291,3 +291,14 @@ void string_replace(string* str, char needle, char repl)
         }
     }
 }
+
+bool cstr_includes(const char *haystack, const char *needle) {
+    int nlen = strlen(needle);
+    int stacklen = strlen(haystack);
+    for(size_t i = 0; i < stacklen; i += nlen) {
+        if(strncmp(haystack + i, needle, nlen) == 0) {
+            return true;
+        }
+    }
+    return false;
+}

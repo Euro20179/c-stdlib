@@ -8,11 +8,11 @@
 typedef uint32_t hash_t;
 
 struct _hashmap_item {
-    hash_t key_hash;
+    char* key;
     void* value;
 };
 
-struct _hashmap_item* _hashmap_item_create(hash_t hash, void* value);
+struct _hashmap_item* _hashmap_item_create(const char* key, void* value);
 void _hashmap_item_destroy(struct _hashmap_item*);
 
 typedef struct {

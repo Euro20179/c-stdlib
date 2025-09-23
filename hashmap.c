@@ -4,10 +4,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-struct _hashmap_item* _hashmap_item_create(hash_t hash, void* value) {
+struct _hashmap_item* _hashmap_item_create(const char* key, void* value) {
     struct _hashmap_item* item = malloc(sizeof(struct _hashmap_item));
-    item->key_hash = hash;
+    int len = strlen(key);
+    item->key = calloc(len, 1);
+    memcpy(item->key, key, len);
     item->value = value;
     return item;
 }
@@ -17,6 +20,7 @@ size_t collide(size_t idx, size_t maxlen) {
 }
 
 void _hashmap_item_destroy(struct _hashmap_item * item) {
+    free(item->key);
     free(item);
 }
 
@@ -51,7 +55,7 @@ size_t get_idx_from_hash(hashmap* map, hash_t h) {
 void hashmap_set(hashmap * map, const char *key, void *value) {
     hash_t h = hash_str(key);
 
-    struct _hashmap_item* item = _hashmap_item_create(h, value);
+    struct _hashmap_item* item = _hashmap_item_create(key, value);
 
     size_t idx = get_idx_from_hash(map, h);
 
@@ -73,6 +77,10 @@ void hashmap_set(hashmap * map, const char *key, void *value) {
     map->item_count++;
 }
 
+int key_cmp(const char* key1, const char* key2) {
+    return strcmp(key1, key2);
+}
+
 int hashmap_unset(hashmap * map, const char *key) {
     hash_t h = hash_str(key);
     size_t idx = get_idx_from_hash(map, h);
@@ -84,7 +92,7 @@ int hashmap_unset(hashmap * map, const char *key) {
 
     llist_node* cur = item.head;
     size_t llist_idx = 0;
-    while(((struct _hashmap_item*)cur->data)->key_hash != h && cur->next != NULL) {
+    while(key_cmp(((struct _hashmap_item*)cur->data)->key, key) != 0 && cur->next != NULL) {
         cur = cur->next;
         llist_idx++;
     }
@@ -93,8 +101,8 @@ int hashmap_unset(hashmap * map, const char *key) {
     llist_remove(&item, llist_idx);
     if(item.len == 0) {
         llist_del(&item);
+        bucket_remove(&map->items, idx);
     }
-    bucket_remove(&map->items, idx);
 
     map->item_count--;
     return 0;
@@ -106,7 +114,7 @@ void* hashmap_get(hashmap* map, const char* key) {
     llist item = *(llist*) bucket_get(&map->items, idx);
 
     llist_node* cur = item.head;
-    while(cur != NULL && ((struct _hashmap_item*)cur->data)->key_hash != h && cur->next != NULL) {
+    while(cur != NULL && key_cmp(((struct _hashmap_item*)cur->data)->key, key) != 0 && cur->next != NULL) {
         cur = cur->next;
     }
     if(cur == NULL) {
@@ -123,7 +131,7 @@ bool hashmap_exists(hashmap * map, const char *key) {
     llist* item = (llist*)bucket_get_ref(&map->items, idx);
 
     llist_node* cur = item->head;
-    while(((struct _hashmap_item*)cur->data)->key_hash != h && cur->next != NULL) {
+    while(key_cmp(((struct _hashmap_item*)cur->data)->key, key) != 0 && cur->next != NULL) {
         cur = cur->next;
     }
     if(cur == NULL) {

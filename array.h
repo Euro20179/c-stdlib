@@ -21,3 +21,7 @@ int array_append(array*, void* data);
 void* array_at(array*, size_t idx);
 
 size_t array_len(array*);
+
+void array_remove_idx(array*, size_t idx);
+
+void array_clear(array*);

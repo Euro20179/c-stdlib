@@ -51,3 +51,13 @@ void* array_at(array* arr, size_t idx) {
 size_t array_len(array* arr) {
     return arr->len;
 }
+
+void array_remove_idx(array * arr, size_t idx) {
+    size_t items_to_move = array_len(arr) - idx;
+    memcpy(arr->data + idx * arr->item_size, arr->data + (idx + 1) * arr->item_size, arr->item_size * items_to_move);
+    arr->len--;
+}
+
+void array_clear(array* arr) {
+    arr->len = 0;
+}

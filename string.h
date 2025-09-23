@@ -57,6 +57,7 @@ void string_concat(string* str, const char* text, size_t textlen);
 //concatinates 2 strings
 void string2_concat(string*, string*);
 
+///creates a cstr from str and puts it into out
 void string_to_cstr(string* str, char* out);
 
 void string_set_char_at(string*, char, int);
@@ -107,3 +108,6 @@ void string_replace(string*, char needle, char repl);
 struct string_format_info {
     char ch;
 };
+
+///checks if needle is included in the haystack
+bool cstr_includes(const char* haystack, const char* needle);
