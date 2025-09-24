@@ -6,6 +6,8 @@
 typedef struct bucket{
     void* items;
 
+    bool* allocated_slots;
+
     size_t item_count;
 
     size_t allocated;

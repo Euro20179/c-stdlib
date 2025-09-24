@@ -5,6 +5,7 @@
 #include "string.h"
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -78,25 +79,32 @@ void hashmap_set(hashmap* map, const char* key, void* value)
 
     size_t initial_idx = idx;
 
-    llist i;
-
     llist* ref;
 
     if (!bucket_full_at(&map->items, idx)) {
-        llist_new(&i);
-        llist_append(&i, item);
-        bucket_set(&map->items, idx, &i);
+        llist* i = llist_new2();
+        llist_append(i, item);
+        bucket_set(&map->items, idx, i);
     } else {
-        ref = (llist*)bucket_get_ref(&map->items, idx);
+        ref = (llist*)bucket_get(&map->items, idx);
 
-        if(llist_find(ref, (char*)key) != -1) {
-            _hashmap_item_destroy(item);
-            return;
+        llist_node* cur = llist_next(ref, NULL);
+
+        while(cur != NULL) {
+            struct _hashmap_item* old_item = llist_node_get(cur);
+            if (strcmp(old_item->key, key) == 0) {
+                _hashmap_item_destroy(old_item);
+                llist_node_set(cur, item);
+                //we are completely done,
+                //there are no new items, so dont inc item_count,
+                //and dont append a new item
+                return;
+            }
+            cur = llist_next(ref, cur);
         }
 
         llist_append(ref, item);
     }
-
     map->item_count++;
 }
 

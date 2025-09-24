@@ -11,6 +11,8 @@ void _bucket_new(bucket* arr, size_t len, size_t member_size) {
     arr->member_size = member_size;
 
     arr->initialized = 1;
+
+    arr->allocated_slots = calloc(len, 1);
 }
 
 void bucket_del(bucket* b) {
@@ -44,6 +46,8 @@ int bucket_set(bucket* arr, size_t idx, void* value) {
 
     memcpy(arr->items + idx * arr->member_size, value, arr->member_size);
 
+    arr->allocated_slots[idx] = 1;
+
     arr->item_count++;
     return 0;
 }
@@ -55,16 +59,15 @@ int bucket_remove(bucket* arr, size_t idx) {
 
     memset(arr->items + idx * arr->member_size, 0, arr->member_size);
 
+    arr->allocated_slots[idx] = 0;
+
     arr->item_count--;
 
     return 0;
 }
 
 bool bucket_full_at(bucket* arr, size_t idx) {
-    if(arr->items + idx * arr->member_size == NULL) {
-        return false;
-    }
-    return true;
+    return arr->allocated_slots[idx] == 1;
 }
 
 int bucket_at(bucket* arr, size_t idx, void* out) {
