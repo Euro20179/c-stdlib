@@ -25,8 +25,6 @@ typedef struct {
 
 void hashmap_new(hashmap*);
 
-void hashmap_del(hashmap*);
-
 ///returns: the number of items in the hashmap
 size_t hashmap_item_count(hashmap*);
 

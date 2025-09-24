@@ -35,11 +35,6 @@ void hashmap_new(hashmap* map)
     bucket_new(&map->items, 256, llist(struct _hashmap_item*));
 }
 
-void hashmap_del(hashmap* map)
-{
-    bucket_del(&map->items);
-}
-
 void hashmap_del_each(hashmap* map, void(cb)(void*))
 {
     for (int i = 0; i < bucket_size(&map->items); i++) {
@@ -47,10 +42,12 @@ void hashmap_del_each(hashmap* map, void(cb)(void*))
             continue;
 
         llist* ref = (llist*)bucket_get(&map->items, i);
-        llist_node* cur = ref->head;
+        llist_node* cur = llist_next(ref, NULL);
         while (cur != NULL) {
-            cb(((struct _hashmap_item*)cur->data)->value);
-            cur = cur->next;
+            struct _hashmap_item* data = llist_node_get(cur);
+            cb(data->value);
+            _hashmap_item_destroy(data);
+            cur = llist_next(ref, cur);
         }
         llist_del(ref);
     }
