@@ -74,8 +74,6 @@ void hashmap_set(hashmap* map, const char* key, void* value)
 
     size_t idx = get_idx_from_hash(map, h);
 
-    size_t initial_idx = idx;
-
     llist* ref;
 
     if (!bucket_full_at(&map->items, idx)) {
@@ -176,7 +174,7 @@ hash_t hash_str(const char* str)
 {
     hash_t hash = 5381;
     int c;
-    while (c = *str++) {
+    while ((c = *str++)) {
         hash = ((hash << 5) + hash) + c;
     }
     return hash;

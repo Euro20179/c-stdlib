@@ -78,7 +78,15 @@ void llist_remove(llist* l, size_t idx)
     while (cur_idx < idx && cur->next != NULL) {
         prev = cur;
         cur = cur->next;
+        cur_idx++;
     }
+
+    //idx out of bounds
+    if(cur_idx < idx) {
+        return;
+    }
+
+    prev->next = cur->next;
     llist_node_destroy(cur);
 }
 
