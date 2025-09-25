@@ -7,6 +7,8 @@
 //creates a stack allocated char buffer for string that is the correct size for string_to_cstr
 #define string_to_cstr_buf_create(name, str) char name[str.len + 1]
 
+#define cstr_len(cstr) (cstr), (sizeof(cstr) - 1)
+
 typedef struct{
     size_t len;
     char* data;
