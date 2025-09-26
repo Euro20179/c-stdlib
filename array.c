@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "array.h"
+#include "iter.h"
 
 array* array_new2(size_t cap, size_t item_size)
 {
@@ -12,6 +13,7 @@ array* array_new2(size_t cap, size_t item_size)
     arr->cap = cap;
     arr->item_size = item_size;
     arr->data = calloc(cap, item_size);
+
     return arr;
 }
 
@@ -60,4 +62,22 @@ void array_remove_idx(array * arr, size_t idx) {
 
 void array_clear(array* arr) {
     arr->len = 0;
+}
+
+size_t array_find(array * arr, void *p) {
+    size_t len = array_len(arr);
+    for(size_t i = 0; i < len; i++) {
+        if(array_at(arr, i) == p) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void array_iter(array* arr, struct iterable_t* i) {
+    ((array*)arr)->iter_pos = 0;
+}
+
+void* array_next(array* arr) {
+    return array_at(arr, ((array*)arr)->iter_pos++);
 }

@@ -15,3 +15,41 @@ See the header files for documentation.
 
 3. functions should generally work the same no matter what (dont break userspace)
 4. struct properties may change, break, etc... do not rely on them
+
+= The Iterable Protocol =
+
+`iter.h` contains a way to implement an iterable object to be used with the foreach macro.
+
+The protocol is very simple.
+
+For example, to implement the iterable protocol for `array` would be as such:
+
+>c
+void array_iter(array*, struct iterable_t*);
+
+void array_next(array*);
+<
+
+And that's it! The array is responsible for keeping track of all state.
+
+`array_iter` is caled when the user calls the `iter` macro, such as:
+>c
+array* arr = array_new2(0, 1);
+struct iterable_t it = iter(arr, array);
+<
+
+`array_next` is called each time `next(it)` is called
+
+In practice this is all handled by the `foreach` macro which can be used as such
+
+>c
+array* arr = array_new2(0, 1);
+int x = 0;
+array_append(arr, &x);
+foreach(int*, arr, array, {
+    printf("My very cool integer: %d\n", *cur);
+});
+<
+
+`cur` and `it` are magical vars that are created within the foreach macro scope.
+`cur` contains the current item, while `it` contains the iterator itself.

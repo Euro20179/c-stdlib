@@ -23,6 +23,8 @@ typedef struct llist{
     struct llist_node* head;
     struct llist_node* last;
     size_t len;
+
+    struct llist_node* iter_cur;
 } llist;
 
 #define llist(ty) struct llist
