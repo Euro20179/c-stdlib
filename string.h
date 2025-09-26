@@ -117,3 +117,6 @@ struct string_format_info {
 
 ///checks if needle is included in the haystack
 bool cstr_includes(const char* haystack, const char* needle);
+
+///returns -1 on failure
+int string_prepend(string*, string*);

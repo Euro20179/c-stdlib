@@ -87,9 +87,7 @@ void string_set(string* str, const char* text, size_t n)
 
     str->len = n;
 
-    for (int i = 0; i < n; i++) {
-        str->data[i] = text[i];
-    }
+    memcpy(str->data, text, n);
 }
 
 void string_set_char_at(string* str, char c, int idx)
@@ -146,7 +144,7 @@ char* string_mkcstr(string* str)
 string* string_from_cstr(const char* str, size_t n)
 {
     string* s = string_new2(n);
-    memcpy(s->data, str, n);
+    string_set(s, str, n);
     return s;
 }
 
@@ -301,4 +299,21 @@ bool cstr_includes(const char *haystack, const char *needle) {
         }
     }
     return false;
+}
+
+int string_prepend(string * str, string * toprepend) {
+    if(str->len + toprepend->len > str->allocated) {
+        int res = string_extend(str, str->len + toprepend->len);
+        if(res < 0) {
+            return -1;
+        }
+    }
+
+    char* cpy = malloc(str->len);
+    memcpy(cpy, str->data, str->len);
+    memcpy(str->data, toprepend->data, toprepend->len);
+    memcpy(str->data + toprepend->len, cpy, str->len);
+    free(cpy);
+    str->len += toprepend->len;
+    return 0;
 }
