@@ -6,6 +6,7 @@
 #include "bucket.h"
 #include "llist.h"
 #include "mem.h"
+#include "iter.h"
 
 typedef uint32_t hash_t;
 
@@ -21,6 +22,9 @@ typedef struct {
     bucket(llist(struct _hashmap_item*)) items;
 
     size_t item_count;
+
+    int cur_bucket_idx;
+    llist_node* cur_item;
 } hashmap;
 
 void hashmap_new(hashmap*);
@@ -53,3 +57,7 @@ bool hashmap_exists(hashmap*, const char* key);
 hash_t hash_str(const char* str);
 
 void hashmap_foreach(hashmap*, void(*)(void*));
+
+void hashmap_iter(hashmap*, struct iterable_t*);
+
+void* hashmap_next(hashmap*);

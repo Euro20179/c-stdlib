@@ -17,11 +17,13 @@ void llist_node_destroy(llist_node* node)
     free(node);
 }
 
-void* llist_node_get(llist_node* n) {
+void* llist_node_get(llist_node* n)
+{
     return n->data;
 }
 
-void llist_node_set(llist_node* n, void* data) {
+void llist_node_set(llist_node* n, void* data)
+{
     n->data = data;
 }
 
@@ -32,7 +34,8 @@ void llist_new(llist* l)
     l->len = 0;
 }
 
-llist* llist_new2() {
+llist* llist_new2()
+{
     llist* l = malloc(sizeof(llist));
     l->head = NULL;
     l->last = NULL;
@@ -81,13 +84,21 @@ void llist_remove(llist* l, size_t idx)
         cur_idx++;
     }
 
-    //idx out of bounds
-    if(cur_idx < idx) {
+    // idx out of bounds
+    if (cur_idx < idx) {
         return;
     }
 
-    prev->next = cur->next;
+    //if prev IS NOT null we are removing a random item
+    if (prev != NULL) {
+        prev->next = cur->next;
+    //if prev IS NULL, we are removing the head
+    } else {
+        l->head = cur->next;
+    }
     llist_node_destroy(cur);
+
+    l->len--;
 }
 
 void* llist_at(llist* l, size_t n)
@@ -141,8 +152,9 @@ int64_t llist_find(llist* l, void* data)
     return idx;
 }
 
-llist_node* llist_next(llist* l, llist_node* start) {
-    if(start == NULL) {
+llist_node* llist_next(llist* l, llist_node* start)
+{
+    if (start == NULL) {
         start = l->head;
         return start;
     }

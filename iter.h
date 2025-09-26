@@ -28,7 +28,7 @@ struct iterable_t {
 
 #define foreach(tyIT, O, T, todo)                   \
     {                                              \
-        struct iterable_t* it = create_iter(T, O); \
+        struct iterable_t* it = iter(T, O); \
         tyIT cur = NULL;                          \
         while ((cur = next(it)) != NULL) {         \
             todo;                                  \

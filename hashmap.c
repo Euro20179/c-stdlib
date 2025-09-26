@@ -85,14 +85,14 @@ void hashmap_set(hashmap* map, const char* key, void* value)
 
         llist_node* cur = llist_next(ref, NULL);
 
-        while(cur != NULL) {
+        while (cur != NULL) {
             struct _hashmap_item* old_item = llist_node_get(cur);
             if (strcmp(old_item->key, key) == 0) {
                 _hashmap_item_destroy(old_item);
                 llist_node_set(cur, item);
-                //we are completely done,
-                //there are no new items, so dont inc item_count,
-                //and dont append a new item
+                // we are completely done,
+                // there are no new items, so dont inc item_count,
+                // and dont append a new item
                 return;
             }
             cur = llist_next(ref, cur);
@@ -114,7 +114,7 @@ int hashmap_unset(hashmap* map, const char* key)
     size_t idx = get_idx_from_hash(map, h);
 
     llist item = *(llist*)bucket_get(&map->items, idx);
-    if (item.len) {
+    if (!item.len) {
         return -1;
     }
 
@@ -198,4 +198,42 @@ void hashmap_foreach(hashmap* map, void(cb)(void*))
 size_t hashmap_item_count(hashmap* map)
 {
     return map->item_count;
+}
+
+void hashmap_iter(hashmap* m, struct iterable_t* i)
+{
+    m->cur_bucket_idx = 0;
+    m->cur_item = NULL;
+}
+
+void* hashmap_next(hashmap* m)
+{
+    llist_node* cur = m->cur_item;
+findnext:
+    while (m->cur_bucket_idx < bucket_size(&m->items) && !bucket_full_at(&m->items, m->cur_bucket_idx)) {
+        cur = NULL;
+        m->cur_bucket_idx++;
+    }
+
+    if(!bucket_full_at(&m->items, m->cur_bucket_idx)) {
+        return NULL;
+    }
+
+    if (cur == NULL) {
+        llist* ref = (llist*)bucket_get(&m->items, m->cur_bucket_idx);
+
+        cur = ref->head;
+        if (cur == NULL) {
+            return NULL;
+        }
+    } else {
+        cur = cur->next;
+        if (cur == NULL) {
+            m->cur_bucket_idx++;
+            goto findnext;
+        }
+    }
+
+    m->cur_item = cur;
+    return cur->data;
 }
