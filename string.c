@@ -309,11 +309,15 @@ int string_prepend(string * str, string * toprepend) {
         }
     }
 
-    char* cpy = malloc(str->len);
-    memcpy(cpy, str->data, str->len);
+    //1. move the string data out of the way
+    //(moving it by toprepend->len only works if toprepend is shorter than str
+    //because otherwise weird overlapping happens)
+    memcpy(str->data + str->len, str->data, str->len);
+    //2. move toprepend to the beginning
     memcpy(str->data, toprepend->data, toprepend->len);
-    memcpy(str->data + toprepend->len, cpy, str->len);
-    free(cpy);
+    //3. move the string back to where it should be (after the prepended data)
+    memcpy(str->data + toprepend->len, str->data + str->len, str->len);
+
     str->len += toprepend->len;
     return 0;
 }
