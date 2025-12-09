@@ -1,0 +1,7 @@
+#!/bin/sh
+
+gcc -o ./test.bin *.c ./tests/*.c
+
+./test.bin
+
+rm test.bin
