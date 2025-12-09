@@ -120,3 +120,6 @@ bool cstr_includes(const char* haystack, const char* needle);
 
 ///returns -1 on failure
 int string_prepend(string*, string*);
+
+///checks if string starts with another string
+bool string_startswith(string*, string*);

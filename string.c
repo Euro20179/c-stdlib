@@ -321,3 +321,12 @@ int string_prepend(string * str, string * toprepend) {
     str->len += toprepend->len;
     return 0;
 }
+
+bool string_startswith(string* str, string* needle) {
+    for(size_t i = 0; i < string_len(needle); i++) {
+        if( string_at(str, i) != string_at(needle, i)) {
+            return false;
+        }
+    }
+    return true;
+}
