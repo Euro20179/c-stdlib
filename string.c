@@ -210,11 +210,17 @@ void string_split(string* str, char sep, void* userdata, void(cb)(string*, size_
 
 void string_slice_suffix(string* str, size_t amount)
 {
+    if(amount > str->len) {
+        amount = str->len;
+    }
     str->len -= amount;
 }
 
 void string_slice_prefix(string* str, size_t amount)
 {
+    if(amount > str->len) {
+        amount = str->len;
+    }
     str->len -= amount;
     memcpy(str->data, str->data + amount, str->len);
 }
