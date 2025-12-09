@@ -54,7 +54,7 @@ void string_concat(string* str, const char* text, size_t textlen)
         return;
     }
     if (textlen + str->len > str->allocated) {
-        if(string_extend(str, textlen)< 0) {
+        if (string_extend(str, textlen) < 0) {
             return;
         }
     }
@@ -103,7 +103,7 @@ void string_set_char_at(string* str, char c, int idx)
 void string_concat_char(string* str, char c)
 {
     if (str->len >= str->allocated) {
-        if(string_extend(str, str->allocated || 1) < 0) {
+        if (string_extend(str, str->allocated || 1) < 0) {
             return;
         }
     }
@@ -117,7 +117,7 @@ int string_extend(string* str, size_t amount)
         return -1;
     int new_amount = str->allocated + amount;
     void* temp = realloc(str->data, new_amount);
-    if(temp == NULL) {
+    if (temp == NULL) {
         return -2;
     }
     str->allocated = new_amount;
@@ -173,8 +173,9 @@ char string_at(string* str, size_t pos)
     return str->data[pos];
 }
 
-__int64_t string_find(string* str, char ch) {
-    for(__int64_t i = 0; i < string_len(str); i++) {
+__int64_t string_find(string* str, char ch)
+{
+    for (__int64_t i = 0; i < string_len(str); i++) {
         if (string_at(str, i) == ch) {
             return i;
         }
@@ -212,7 +213,8 @@ void string_slice_suffix(string* str, size_t amount)
     str->len -= amount;
 }
 
-void string_slice_prefix(string * str, size_t amount) {
+void string_slice_prefix(string* str, size_t amount)
+{
     str->len -= amount;
     memcpy(str->data, str->data + amount, str->len);
 }
@@ -234,7 +236,7 @@ void string_tr(string* str, char from, char to)
 void string_cpy(string* to, string* from)
 {
     if (to->allocated < from->allocated) {
-        if(string_extend(to, from->len) < 0) {
+        if (string_extend(to, from->len) < 0) {
             return;
         }
     }
@@ -285,8 +287,8 @@ void string_nconcatf(string* str, size_t maxlen, const char* fmt, ...)
     vsnprintf(buf, maxlen, fmt, args);
     va_end(args);
     int len = 0;
-    for(int i = 0; i < maxlen; i++) {
-        if(buf[i] == 0) {
+    for (int i = 0; i < maxlen; i++) {
+        if (buf[i] == 0) {
             break;
         }
         len++;
@@ -304,43 +306,66 @@ void string_replace(string* str, char needle, char repl)
     }
 }
 
-bool cstr_includes(const char *haystack, const char *needle) {
+bool cstr_includes(const char* haystack, const char* needle)
+{
     int nlen = strlen(needle);
     int stacklen = strlen(haystack);
-    for(size_t i = 0; i < stacklen; i += nlen) {
-        if(strncmp(haystack + i, needle, nlen) == 0) {
+    for (size_t i = 0; i < stacklen; i += nlen) {
+        if (strncmp(haystack + i, needle, nlen) == 0) {
             return true;
         }
     }
     return false;
 }
 
-int string_prepend(string * str, string * toprepend) {
-    if(str->len + toprepend->len > str->allocated) {
+int string_prepend(string* str, string* toprepend)
+{
+    if (str->len + toprepend->len > str->allocated) {
         int res = string_extend(str, str->len + toprepend->len);
-        if(res < 0) {
+        if (res < 0) {
             return -1;
         }
     }
 
-    //1. move the string data out of the way
+    // 1. move the string data out of the way
     //(moving it by toprepend->len only works if toprepend is shorter than str
-    //because otherwise weird overlapping happens)
+    // because otherwise weird overlapping happens)
     memcpy(str->data + str->len, str->data, str->len);
-    //2. move toprepend to the beginning
+    // 2. move toprepend to the beginning
     memcpy(str->data, toprepend->data, toprepend->len);
-    //3. move the string back to where it should be (after the prepended data)
+    // 3. move the string back to where it should be (after the prepended data)
     memcpy(str->data + toprepend->len, str->data + str->len, str->len);
 
     str->len += toprepend->len;
     return 0;
 }
 
-bool string_startswith(string* str, string* needle) {
-    for(size_t i = 0; i < string_len(needle); i++) {
-        if( string_at(str, i) != string_at(needle, i)) {
+bool string_startswith(string* str, string* needle)
+{
+    for (size_t i = 0; i < string_len(needle); i++) {
+        if (string_at(str, i) != string_at(needle, i)) {
             return false;
         }
     }
     return true;
+}
+
+void string_trimstart(string* str, const char* mask)
+{
+    const int masklen = strlen(mask);
+    bool not_found_all = true;
+    while (not_found_all) {
+        for (int i = 0; i < masklen; i++) {
+            char ch = string_at(str, 0);
+            if(ch != mask[i]) {
+                not_found_all = false;
+                continue;
+            }
+
+            not_found_all = true;
+            while (string_at(str, 0) == mask[i]) {
+                string_slice_prefix(str, 1);
+            }
+        }
+    }
 }

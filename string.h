@@ -130,3 +130,6 @@ int string_prepend(string*, string*);
 
 ///checks if string starts with another string
 bool string_startswith(string*, string*);
+
+///removes all chars in mask from the start of string
+void string_trimstart(string*, const char* mask);
