@@ -173,6 +173,15 @@ char string_at(string* str, size_t pos)
     return str->data[pos];
 }
 
+__int64_t string_find(string* str, char ch) {
+    for(__int64_t i = 0; i < string_len(str); i++) {
+        if (string_at(str, i) == ch) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void string_split(string* str, char sep, void* userdata, void(cb)(string*, size_t, void*))
 {
     string cur;

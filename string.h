@@ -74,6 +74,10 @@ void string_copy(string* str, string* ostring);
 //Returns 0 if pos >= len or the string is not initialized
 char string_at(string* str, size_t pos);
 
+///Finds the index of ch in str
+///returns -1 if ch is not in str
+__int64_t string_find(string* str, char ch);
+
 //splits a string by sep, every time sep is found, cb is called with the current string
 //the current string is one of:
 //* the string found between the beginning and sep,
