@@ -212,6 +212,11 @@ void string_slice_suffix(string* str, size_t amount)
     str->len -= amount;
 }
 
+void string_slice_prefix(string * str, size_t amount) {
+    str->len -= amount;
+    memcpy(str->data, str->data + amount, str->len);
+}
+
 size_t string_len(string* str)
 {
     return str->len;

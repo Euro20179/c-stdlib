@@ -91,6 +91,9 @@ void string_split(string*, char sep, void* userdata, void(cb)(string*, size_t co
 ///removes amount chars from the end of string
 void string_slice_suffix(string*, size_t amount);
 
+///removes amount chars from the begining of string
+void string_slice_prefix(string*, size_t amount);
+
 ///mutates str to turn it into a cstring.
 ///effectively this means adding NULL to the end of the data in str
 ///WARNING: calling string_del*() on str will also free the resulting cstr
