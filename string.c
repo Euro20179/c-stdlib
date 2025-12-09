@@ -404,7 +404,6 @@ bool string_eq(string * str, const char * cmp) {
     }
 
     for(size_t i = 0; i < string_len(str); i++) {
-        printf("%c ", string_at(str, i));
         if(string_at(str, i) != cmp[i]) {
             return false;
         }
