@@ -94,6 +94,14 @@ void string_slice_suffix(string*, size_t amount);
 ///removes amount chars from the begining of string
 void string_slice_prefix(string*, size_t amount);
 
+///removes the part of the string before start, and after end.
+///end is exclusive
+///if start is past the end of the string, -1 is returned
+///if start is greater than end -2 is returned
+///if end is negative it counts backwards from the end of the string
+///if end is 0, go to the end
+int string_slice(string*, size_t start, __int64_t end);
+
 ///mutates str to turn it into a cstring.
 ///effectively this means adding NULL to the end of the data in str
 ///WARNING: calling string_del*() on str will also free the resulting cstr
@@ -123,6 +131,7 @@ struct string_format_info {
 };
 
 ///checks if needle is included in the haystack
+///WARNING: uses strlen on needle and haystack
 bool cstr_includes(const char* haystack, const char* needle);
 
 ///returns -1 on failure
@@ -132,4 +141,9 @@ int string_prepend(string*, string*);
 bool string_startswith(string*, string*);
 
 ///removes all chars in mask from the start of string
+///WARNING: uses strlen on mask
 void string_trimstart(string*, const char* mask);
+
+///checks if a string is equal to a cstr
+///WARNING: uses strlen on cmp
+bool string_eq(string*, const char* cmp);

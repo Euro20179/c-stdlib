@@ -225,6 +225,28 @@ void string_slice_prefix(string* str, size_t amount)
     memcpy(str->data, str->data + amount, str->len);
 }
 
+int string_slice(string* str, size_t start, int64_t end) {
+    if(start >= str->len) {
+        return -1;
+    }
+
+    if(end < 0) {
+        end = str->len + end;
+    }
+
+    if(end == 0) {
+        end = str->len;
+    }
+
+    if(start > end) {
+        return -2;
+    }
+
+    str->len = end - start;
+    memcpy(str->data, str->data + start, end - start);
+    return 0;
+}
+
 size_t string_len(string* str)
 {
     return str->len;
@@ -336,11 +358,9 @@ int string_prepend(string* str, string* toprepend)
     // 1. move the string data out of the way
     //(moving it by toprepend->len only works if toprepend is shorter than str
     // because otherwise weird overlapping happens)
-    memcpy(str->data + str->len, str->data, str->len);
+    memcpy(str->data + toprepend->len, str->data, str->len);
     // 2. move toprepend to the beginning
     memcpy(str->data, toprepend->data, toprepend->len);
-    // 3. move the string back to where it should be (after the prepended data)
-    memcpy(str->data + toprepend->len, str->data + str->len, str->len);
 
     str->len += toprepend->len;
     return 0;
@@ -374,4 +394,21 @@ void string_trimstart(string* str, const char* mask)
             }
         }
     }
+}
+
+bool string_eq(string * str, const char * cmp) {
+    const int cmp_len = strlen(cmp);
+
+    if(cmp_len != str->len) {
+        return false;
+    }
+
+    for(size_t i = 0; i < string_len(str); i++) {
+        printf("%c ", string_at(str, i));
+        if(string_at(str, i) != cmp[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
