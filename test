@@ -1,7 +1,10 @@
 #!/bin/sh
 
-gcc -o ./test.bin *.c ./tests/*.c
+for file in ./tests/*.c; do
+    name=${file##*/}
+    printf -- "--------------------\nDOING: %s\n---------------------\n" "$name"
+    gcc -o ./"$name".bin ./*.c "$file"
+    ./"$name".bin
+done
 
-./test.bin
-
-rm test.bin
+rm ./*.bin

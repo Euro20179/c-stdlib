@@ -20,7 +20,9 @@ mktest(string_test_new, {
     string_set(&k, text, strlen(text));
 
     for(int i = 0; i < strlen(text); i++) {
-        assert(string_at(&k, i) == text[i], "string_new sets chars incorrectly");
+        t("string setting chars",
+          "%c", string_at(&k, i), eq, text[i]
+          );
     }
 
     string_del(&k);
@@ -31,11 +33,17 @@ mktest(string_test_slice, {
     string_set(str, "Hello", 5);
     string_slice_prefix(str, 100);
 
-    assert(string_len(str) == 0, "over slicing should make the len 0");
+    t(
+        "overslicing prefix",
+        "%zu", string_len(str), eq, 0
+    );
     string_set(str, "Hello", 5);
     string_slice_suffix(str, 100);
 
-    assert(string_len(str) == 0, "over slicing should make the len 0");
+    t(
+        "overslicing suffix",
+        "%zu", string_len(str), eq, 0
+    );
     string_del2(str);
 })
 
