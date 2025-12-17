@@ -18,10 +18,19 @@ array* array_new2(size_t cap, size_t item_size);
 void array_del2(array*);
 
 ///returns -1 on fail
+///
+///WARNING: does not create a copy of data
+///         if data is freed, trying to access it from the array
+///         will cause a segfault.
 int array_append(array*, void* data);
 
+///returns a pointer to an item in the array
 ///returns NULL on out of bounds
-void* array_at(array*, size_t idx);
+void** array_at(array*, size_t idx);
+
+///creates a copy of an item in the array in out
+///out will be set to NULL if idx is out of bounds or longer than len
+void array_get(array*, size_t, void* out);
 
 size_t array_len(array*);
 

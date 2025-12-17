@@ -2,6 +2,14 @@ This is my amazing™ standard library.
 
 See the header files for documentation.
 
+
+= BREAKING CHANGES =
+    == 2025-12-16 ==
+        + `array_append` will no longer append copies
+            instead appends *EXACTLY* what it is given
+        + `array_at` will now return a *POINTER* to an idx in an array
+            instead of getting a copy of an item at an idx.
+
 = Notes =
 
 1. all functions are namespaced, such as `hashmap_new()`, `string_new()`, `llist_append()` etc...
