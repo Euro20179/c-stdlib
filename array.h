@@ -11,6 +11,8 @@ typedef struct {
     size_t iter_pos;
 } array;
 
+#define array_t(ty) array
+
 ///creates a new array and returns the pointer
 ///caller must call array_del
 array* array_new2(size_t cap, size_t item_size);
