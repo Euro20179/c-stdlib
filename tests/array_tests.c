@@ -1,5 +1,6 @@
 #include "../tests.h"
 #include "../array.h"
+#include <stdbool.h>
 #include <stdio.h>
 
 
@@ -30,7 +31,20 @@ mkarrtest(iter, int*, {
     })
 })
 
+mkarrtest(clear, const char*, {
+    array_append(arr, "Hello");
+
+    t("array len is correct", "%lu",
+            array_len(arr), eq, 1);
+
+    array_clear(arr);
+
+    t("array was cleared", "%lu",
+            array_len(arr), eq, 0);
+})
+
 int main() {
+    TEST(test_clear);
     TEST(test_iter);
     printf("\n--------------------\n\x1b[32;1m[✓]\x1b[0m %zu \x1b[31;1m[✗]\x1b[0m %zu\n", pass_count, err_count);
 }
