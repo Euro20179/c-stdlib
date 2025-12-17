@@ -2,6 +2,7 @@
 #include "../tests.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 
@@ -235,6 +236,27 @@ mkstrtest(prepend, {
     );
 })
 
+mkstrtest(massive_data, {
+    for(int i = 0; i < 100000; i++) {
+        string_concat(str, (char[]){random(), random(), random()}, 3);
+    }
+    t("length should be 100000 * 3", "%lu",
+            string_len(str), eq, 100000 * 3);
+
+    string_del2(str);
+    str = string_new2(0);
+    for(int i = 0; i < 100000; i++) {
+        string_concat(str, "Hello", 5);
+    }
+
+    string* hello = string_new2(5);
+    string_set(hello, "Hello", 5);
+    t("String should start with Hello", "%d",
+            string_startswith(str, hello), eq, 1);
+    string_del2(str);
+    string_del2(hello);
+})
+
 int main() {
     TEST(string_test_new);
     TEST(string_test_concat);
@@ -245,6 +267,7 @@ int main() {
     TEST(string_test_from_cstr);
     TEST(string_test_cstr_includes);
     TEST(string_test_prepend);
+    TEST(string_test_massive_data);
 
     printf("\n--------------------\n\x1b[32;1m[✓]\x1b[0m %zu \x1b[31;1m[✗]\x1b[0m %zu\n", pass_count, err_count);
 }
