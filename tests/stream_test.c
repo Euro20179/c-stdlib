@@ -31,8 +31,29 @@ mktest(test_stream_fwrite, {
     string_del2(str);
 })
 
+mktest(test_rand_bytes, {
+    FILE* r = fopen("/dev/random", "r");
+    string* str = string_new2(100);
+    string_stream* os = string_stream_open(str);
+
+    stream_n(r, os, stream_fread, string_stream_write, 30);
+
+    string_stream_close(os);
+
+    t("read exactly 30 random bytes", "%zu",
+            string_len(str), eq, 30);
+
+    t("allocated 100 bytes for string", "%zu",
+            str->allocated, eq, 100);
+
+    string_del2(str);
+
+    fclose(r);
+})
+
 int main() {
     TEST(test_stream_fwrite);
+    TEST(test_rand_bytes);
 
     printf("\n--------------------\n\x1b[32;1m[✓]\x1b[0m %zu \x1b[31;1m[✗]\x1b[0m %zu\n", pass_count, err_count);
 }

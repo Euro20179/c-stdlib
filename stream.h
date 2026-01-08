@@ -55,14 +55,20 @@ typedef int(*stream_seek_t)(void*, size_t);
 #define writer_fn(fn) (size_t(*)(void*, uint8_t*, size_t)) (fn)
 #define seeker_fn(fn) (int(*)(void*, size_t)) (fn)
 
+#define stream(rf, wt, r, w) stream_stream((rf), (wt), reader_fn(r), writer_fn(w))
+#define stream_n(rf, wt, r, w, n) stream_nstream((rf), (wt), reader_fn(r), writer_fn(w), n)
 
 
 // reads the entire reader stream, and writes to the writer
-void stream_stream(void* readfrom, void* writeto, 
+// RETURNS:
+// number of bytes read
+size_t stream_stream(void* readfrom, void* writeto, 
         stream_reader_t reader, stream_writer_t writer);
 
 // reads n bytes from reader and puts them into writer
-void stream_nstream(stream_reader_t, stream_writer_t, size_t n);
+// RETURNS:
+// number of bytes read (if less than n, EOF was hit)
+size_t stream_nstream(void* readfrom, void* writeto, stream_reader_t, stream_writer_t, size_t n);
 
 // seeks n bytes using the provided seeker function
 // return values:
