@@ -9,6 +9,7 @@ static uint64_t pass_count;
     if(res[0] != 0) { \
         printf("\x1b[31m%s\n\x1b[0m", res); \
         printf("\x1b[31;1mERR ✗ \x1b[0m\n-------\n"); \
+        return 1; \
     } else { \
         printf("\x1b[32;1mOK ✓ \x1b[0m\n-------\n"); \
     }\
