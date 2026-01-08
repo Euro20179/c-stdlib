@@ -1,5 +1,4 @@
 #include "string.h"
-#include "stream.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -467,13 +466,19 @@ size_t string_stream_read(string_stream* stream, uint8_t* out, size_t maxlen)
 
 size_t string_stream_write(string_stream* stream, uint8_t* in, size_t byte_count)
 {
-    if (byte_count > stream->str->allocated - string_len(stream->str)) {
+    if (byte_count > stream->str->allocated - stream->pos || stream->pos > stream->str->allocated) {
         if (string_extend(stream->str, stream->str->allocated * 2 + (stream->str->allocated - string_len(stream->str))) < 0) {
             return 0;
         }
     }
 
-    string_concat(stream->str, (const char*)in, byte_count);
+    memcpy(stream->str->data + stream->pos, in, byte_count);
+    if(stream->pos > stream->str->len) {
+        stream->str->len = stream->pos + byte_count;
+    } else if (stream->pos + byte_count > stream->str->len) {
+        stream->str->len += (stream->pos + byte_count) - stream->str->len;
+    }
+    stream->pos += byte_count;
 
     return byte_count;
 }

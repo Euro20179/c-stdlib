@@ -302,6 +302,27 @@ mkstrtest(stream_seek, {
     string_stream_close(outs);
 })
 
+mkstrtest(stream_seek_complex, {
+    string* in = str;
+    string_concat(in, "Hello there", strlen("Hello there"));
+    string* out = string_new2(string_len(str));
+
+    string_stream* ins = string_stream_open(in);
+    string_stream* outs = string_stream_open(out);
+
+    string_set(out, "Very ", 5);
+    string_stream_seek(outs, 5);
+    string_stream_seek(ins, 6);
+
+    stream(ins, outs, string_stream_read, string_stream_write);
+    t("seeking 5 on out, seeking 6 on input and streaming from in to out results in 'Very there'",
+            "%d", string_eq(out, "Very there"), eq, 1);
+
+    string_del2(out);
+    string_stream_close(ins);
+    string_stream_close(outs);
+})
+
 int main() {
     TEST(string_test_new);
     TEST(string_test_concat);
@@ -315,6 +336,7 @@ int main() {
     TEST(string_test_massive_data);
     TEST(string_test_basic_stream);
     TEST(string_test_stream_seek);
+    TEST(string_test_stream_seek_complex);
 
     printf("\n--------------------\n\x1b[32;1m[✓]\x1b[0m %zu \x1b[31;1m[✗]\x1b[0m %zu\n", pass_count, err_count);
 }
