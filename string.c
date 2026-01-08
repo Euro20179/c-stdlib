@@ -1,10 +1,11 @@
 #include "string.h"
+#include "stream.h"
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -222,7 +223,7 @@ void string_split(string* str, char sep, void* userdata, void(cb)(string*, size_
 
 void string_slice_suffix(string* str, size_t amount)
 {
-    if(amount > str->len) {
+    if (amount > str->len) {
         amount = str->len;
     }
     str->len -= amount;
@@ -230,27 +231,28 @@ void string_slice_suffix(string* str, size_t amount)
 
 void string_slice_prefix(string* str, size_t amount)
 {
-    if(amount > str->len) {
+    if (amount > str->len) {
         amount = str->len;
     }
     str->len -= amount;
     memcpy(str->data, str->data + amount, str->len);
 }
 
-int string_slice(string* str, size_t start, int64_t end) {
-    if(start >= str->len) {
+int string_slice(string* str, size_t start, int64_t end)
+{
+    if (start >= str->len) {
         return -1;
     }
 
-    if(end < 0) {
+    if (end < 0) {
         end = str->len + end;
     }
 
-    if(end == 0) {
+    if (end == 0) {
         end = str->len;
     }
 
-    if(start > end) {
+    if (start > end) {
         return -2;
     }
 
@@ -395,7 +397,7 @@ void string_trimstart(string* str, const char* mask)
     while (not_found_all) {
         for (int i = 0; i < masklen; i++) {
             char ch = string_at(str, 0);
-            if(ch != mask[i]) {
+            if (ch != mask[i]) {
                 not_found_all = false;
                 continue;
             }
@@ -408,15 +410,16 @@ void string_trimstart(string* str, const char* mask)
     }
 }
 
-bool string_eq(string * str, const char * cmp) {
+bool string_eq(string* str, const char* cmp)
+{
     const int cmp_len = strlen(cmp);
 
-    if(cmp_len != str->len) {
+    if (cmp_len != str->len) {
         return false;
     }
 
-    for(size_t i = 0; i < cmp_len; i++) {
-        if(string_at(str, i) != cmp[i]) {
+    for (size_t i = 0; i < cmp_len; i++) {
+        if (string_at(str, i) != cmp[i]) {
             return false;
         }
     }
@@ -426,30 +429,32 @@ bool string_eq(string * str, const char * cmp) {
 
 // string stream stuff {{{
 
-struct string_stream{
+struct string_stream {
     string* str;
     size_t pos;
 };
 
-
-string_stream* string_stream_open(string * str) {
+string_stream* string_stream_open(string* str)
+{
     string_stream* stream = malloc(sizeof(string_stream));
     stream->str = str;
     stream->pos = 0;
     return stream;
 }
 
-void string_stream_close(string_stream* stream) {
+void string_stream_close(string_stream* stream)
+{
     free(stream);
 }
 
-size_t string_stream_read(string_stream* stream, uint8_t* out, size_t maxlen) {
-    if(stream->pos >= string_len(stream->str)) {
+size_t string_stream_read(string_stream* stream, uint8_t* out, size_t maxlen)
+{
+    if (stream->pos >= string_len(stream->str)) {
         return 0;
     }
 
     size_t len = string_len(stream->str) - stream->pos;
-    if(maxlen >= len) {
+    if (maxlen >= len) {
         memcpy(out, stream->str->data + stream->pos, len);
         stream->pos += len;
         return len;
@@ -460,9 +465,10 @@ size_t string_stream_read(string_stream* stream, uint8_t* out, size_t maxlen) {
     return maxlen;
 }
 
-size_t string_stream_write(string_stream* stream, uint8_t* in, size_t byte_count) {
+size_t string_stream_write(string_stream* stream, uint8_t* in, size_t byte_count)
+{
     if (byte_count > stream->str->allocated - string_len(stream->str)) {
-        if(string_extend(stream->str, stream->str->allocated * 2 + (stream->str->allocated - string_len(stream->str))) < 0) {
+        if (string_extend(stream->str, stream->str->allocated * 2 + (stream->str->allocated - string_len(stream->str))) < 0) {
             return 0;
         }
     }
@@ -472,11 +478,13 @@ size_t string_stream_write(string_stream* stream, uint8_t* in, size_t byte_count
     return byte_count;
 }
 
-int string_stream_seek(string_stream* stream, size_t bytes) {
-    if(bytes > string_len(stream->str) - stream->pos) {
+int string_stream_seek(string_stream* stream, size_t bytes)
+{
+    if (bytes > string_len(stream->str) - stream->pos) {
         stream->pos = string_len(stream->str);
         return -2;
     }
+
     stream->pos += bytes;
     return 0;
 }

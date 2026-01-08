@@ -1,5 +1,49 @@
+/*
+stream.h
+
+The goal of this library is to make it so that anything can be a reader, writer
+or be able to be seeked.
+
+Reader functions:
+A reader function reads an object from the current cursor position
+and outputs the data into a buffer.
+PARAMS:
+    object to read
+    output buffer
+    max bytes to read
+RETURNS:
+    the number of bytes read
+
+Writer functions:
+A writer function writes n bytes from a buffer to an object at the current cursor
+position.
+PARAMS:
+    object to read
+    input buffer
+    bytes to write from input buffer
+RETURNS:
+    the number of bytes written (may be less than requested as if for example
+                                the object ran out of space)
+
+Seeker functions:
+Moves the cursor either forward or backward depending on seek FLAGS
+If a seeker fucntion doesn't implement a flag it should return -3 - bitpos(flag)
+eg if the flag is 0b10, it should return -10 - bitpos(0b10) -> -12
+PARAMS:
+    object to seek
+    amount to seek (unsigned)
+RETURNS:
+    0 - seeked the requested amount
+    -1 - failed to seek
+    -2 - seeked to EOF or SOF (start of file)
+         EOF is 1 byte past the end
+         SOF is the first byte
+    -10 - bitpos(flag) - invalid flag
+*/
+#pragma once
 #include <stddef.h>
 #include <stdint.h>
+#include <strings.h>
 #include <stdio.h>
 
 //return 0 for EOF
@@ -10,6 +54,8 @@ typedef int(*stream_seek_t)(void*, size_t);
 #define reader_fn(fn) (size_t(*)(void*, uint8_t*, size_t)) (fn)
 #define writer_fn(fn) (size_t(*)(void*, uint8_t*, size_t)) (fn)
 #define seeker_fn(fn) (int(*)(void*, size_t)) (fn)
+
+
 
 // reads the entire reader stream, and writes to the writer
 void stream_stream(void* readfrom, void* writeto, 

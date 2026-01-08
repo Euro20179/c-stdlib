@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stream.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -26,6 +27,7 @@ size_t string_stream_read(string_stream*, uint8_t* out, size_t maxlen);
 
 size_t string_stream_write(string_stream*, uint8_t* in, size_t byte_count);
 
+// see seek FLAGS in stream.h for FLAGS
 int string_stream_seek(string_stream*, size_t bytes);
 
 ///creates a new string
