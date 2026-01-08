@@ -1,4 +1,5 @@
 #include "stream.h"
+#include <stdio.h>
 
 void stream_stream(void* readfrom, void* writeto,
         stream_reader_t reader, stream_writer_t writer) {
@@ -12,4 +13,12 @@ void stream_stream(void* readfrom, void* writeto,
 int stream_seek(void* toseek,
         stream_seek_t seeker, size_t bytes) {
     return seeker(toseek, bytes);
+}
+
+size_t stream_fwrite(FILE* file, uint8_t * buf, size_t bufsize) {
+    return fwrite(buf, 1, bufsize, file);
+}
+
+size_t stream_fread(FILE* file, uint8_t * buf, size_t bufsize) {
+    return fread(buf, 1, bufsize, file);
 }
