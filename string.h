@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <uchar.h>
@@ -15,6 +16,17 @@ typedef struct{
     size_t allocated;
     bool initialized;
 } string;
+
+typedef struct string_stream string_stream;
+
+string_stream* string_stream_open(string*);
+void string_stream_close(string_stream*);
+
+size_t string_stream_read(string_stream*, uint8_t* out, size_t maxlen);
+
+size_t string_stream_write(string_stream*, uint8_t* in, size_t byte_count);
+
+int string_stream_seek(string_stream*, size_t bytes);
 
 ///creates a new string
 ///set len to 0 or NULL, if you are unsure of the strings length

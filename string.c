@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -115,6 +116,17 @@ int string_extend(string* str, size_t amount)
 {
     if (str->initialized != true)
         return -1;
+
+    if (str->allocated == 0) {
+        str->data = calloc(amount, 1);
+        if (str->data == NULL) {
+            return -2;
+        }
+
+        str->allocated = amount;
+        return 0;
+    }
+
     int new_amount = str->allocated + amount;
     void* temp = realloc(str->data, new_amount);
     if (temp == NULL) {
@@ -403,7 +415,7 @@ bool string_eq(string * str, const char * cmp) {
         return false;
     }
 
-    for(size_t i = 0; i < string_len(str); i++) {
+    for(size_t i = 0; i < cmp_len; i++) {
         if(string_at(str, i) != cmp[i]) {
             return false;
         }
@@ -411,3 +423,61 @@ bool string_eq(string * str, const char * cmp) {
 
     return true;
 }
+
+// string stream stuff {{{
+
+struct string_stream{
+    string* str;
+    size_t pos;
+};
+
+
+string_stream* string_stream_open(string * str) {
+    string_stream* stream = malloc(sizeof(string_stream));
+    stream->str = str;
+    stream->pos = 0;
+    return stream;
+}
+
+void string_stream_close(string_stream* stream) {
+    free(stream);
+}
+
+size_t string_stream_read(string_stream* stream, uint8_t* out, size_t maxlen) {
+    if(stream->pos >= string_len(stream->str)) {
+        return 0;
+    }
+
+    size_t len = string_len(stream->str) - stream->pos;
+    if(maxlen >= len) {
+        memcpy(out, stream->str->data + stream->pos, len);
+        stream->pos += len;
+        return len;
+    }
+
+    memcpy(out, stream->str->data + stream->pos, maxlen);
+    stream->pos += maxlen;
+    return maxlen;
+}
+
+size_t string_stream_write(string_stream* stream, uint8_t* in, size_t byte_count) {
+    if (byte_count > stream->str->allocated - string_len(stream->str)) {
+        if(string_extend(stream->str, stream->str->allocated * 2 + (stream->str->allocated - string_len(stream->str))) < 0) {
+            return 0;
+        }
+    }
+
+    string_concat(stream->str, (const char*)in, byte_count);
+
+    return byte_count;
+}
+
+int string_stream_seek(string_stream* stream, size_t bytes) {
+    if(bytes > string_len(stream->str) - stream->pos) {
+        stream->pos = string_len(stream->str);
+        return -2;
+    }
+    stream->pos += bytes;
+    return 0;
+}
+// }}}

@@ -1,5 +1,6 @@
 #include "../string.h"
 #include "../tests.h"
+#include "../stream.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -257,6 +258,50 @@ mkstrtest(massive_data, {
     string_del2(hello);
 })
 
+mkstrtest(basic_stream, {
+    string* in = str;
+    string_concat(in, "Hello there", strlen("Hello there"));
+    string* out = string_new2(string_len(str));
+
+    string_stream* ins = string_stream_open(in);
+    string_stream* outs = string_stream_open(out);
+
+    stream_stream(ins, outs, reader_fn(string_stream_read), writer_fn(string_stream_write));
+
+    t("out string should be 'Hello there'", "%d",
+            string_eq(out, "Hello there"), eq, true);
+
+    string_del2(out);
+
+    string_stream_close(ins);
+    string_stream_close(outs);
+})
+
+mkstrtest(stream_seek, {
+    string* in = str;
+    string_concat(in, "Hello there", strlen("Hello there"));
+    string* out = string_new2(string_len(str));
+
+    string_stream* ins = string_stream_open(in);
+    string_stream* outs = string_stream_open(out);
+
+    stream_seek(ins, seek_fn(string_stream_seek), 2);
+
+    stream_stream(ins, outs, reader_fn(string_stream_read), writer_fn(string_stream_write));
+
+    t("out string should be 'llo there'", "%d",
+            string_eq(out, "llo there"), eq, true);
+
+    stream_seek(ins, seek_fn(string_stream_seek), 0);
+    t("seek to EOF", "%d",
+            stream_seek(ins, seek_fn(string_stream_seek), 1000), eq, -2);
+
+    string_del2(out);
+
+    string_stream_close(ins);
+    string_stream_close(outs);
+})
+
 int main() {
     TEST(string_test_new);
     TEST(string_test_concat);
@@ -268,6 +313,8 @@ int main() {
     TEST(string_test_cstr_includes);
     TEST(string_test_prepend);
     TEST(string_test_massive_data);
+    TEST(string_test_basic_stream);
+    TEST(string_test_stream_seek);
 
     printf("\n--------------------\n\x1b[32;1m[✓]\x1b[0m %zu \x1b[31;1m[✗]\x1b[0m %zu\n", pass_count, err_count);
 }
