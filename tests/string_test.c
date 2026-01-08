@@ -285,16 +285,16 @@ mkstrtest(stream_seek, {
     string_stream* ins = string_stream_open(in);
     string_stream* outs = string_stream_open(out);
 
-    stream_seek(ins, seek_fn(string_stream_seek), 2);
+    stream_seek(ins, seeker_fn(string_stream_seek), 2);
 
     stream_stream(ins, outs, reader_fn(string_stream_read), writer_fn(string_stream_write));
 
     t("out string should be 'llo there'", "%d",
             string_eq(out, "llo there"), eq, true);
 
-    stream_seek(ins, seek_fn(string_stream_seek), 0);
+    stream_seek(ins, seeker_fn(string_stream_seek), 0);
     t("seek to EOF", "%d",
-            stream_seek(ins, seek_fn(string_stream_seek), 1000), eq, -2);
+            stream_seek(ins, seeker_fn(string_stream_seek), 1000), eq, -2);
 
     string_del2(out);
 

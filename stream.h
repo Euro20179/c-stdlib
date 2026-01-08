@@ -9,7 +9,7 @@ typedef int(*stream_seek_t)(void*, size_t);
 
 #define reader_fn(fn) (size_t(*)(void*, uint8_t*, size_t)) (fn)
 #define writer_fn(fn) (size_t(*)(void*, uint8_t*, size_t)) (fn)
-#define seek_fn(fn) (int(*)(void*, size_t)) (fn)
+#define seeker_fn(fn) (int(*)(void*, size_t)) (fn)
 
 // reads the entire reader stream, and writes to the writer
 void stream_stream(void* readfrom, void* writeto, 
