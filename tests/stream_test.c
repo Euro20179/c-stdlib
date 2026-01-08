@@ -36,12 +36,12 @@ mktest(test_rand_bytes, {
     string* str = string_new2(100);
     string_stream* os = string_stream_open(str);
 
-    stream_n(r, os, stream_fread, string_stream_write, 30);
+    size_t bytes_read = stream_n(r, os, stream_fread, string_stream_write, 30);
 
     string_stream_close(os);
 
     t("read exactly 30 random bytes", "%zu",
-            string_len(str), eq, 30);
+            bytes_read, eq, 30);
 
     t("allocated 100 bytes for string", "%zu",
             str->allocated, eq, 100);
