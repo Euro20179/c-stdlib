@@ -38,9 +38,7 @@ int array_append(array* arr, void* data)
         arr->cap *= 2;
     }
 
-    for (int32_t i = arr->item_size - 1; i >= 0; i--) {
-        *((char**)(arr->data + arr->len * arr->item_size + i)) = (char*)(data + i);
-    }
+    *((void**)(arr->data + arr->len * arr->item_size)) = data;
     arr->len++;
 
     return 0;

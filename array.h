@@ -1,3 +1,12 @@
+/*
+array.h
+
+The array struct is mostly useful for pointer objects as opposed to intrinsic
+values such as `3`.
+It can be used for intrinsic values but the type of the array must be a pointer
+to said type
+*/
+
 #pragma once
 #include <stddef.h>
 #include "iter.h"

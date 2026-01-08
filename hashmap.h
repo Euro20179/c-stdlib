@@ -29,12 +29,18 @@ typedef struct {
 
 void hashmap_new(hashmap*);
 
+hashmap* hashmap_new2();
+
 ///returns: the number of items in the hashmap
 size_t hashmap_item_count(hashmap*);
 
 ///goes through each item in the hashmap, and calls a function so that you can delete the value
+///cb can be null if you dont want to clean up the values
 ///in the process also deletes the hashmap
 void hashmap_del_each(hashmap*, void(*)(void*));
+
+// similar to hashmap_del_each, but should be caled if hashmap_new2 was used.
+void hashmap_del2_each(hashmap*, void(*)(void*));
 
 ///if item is not found, return NULL
 void* hashmap_get(hashmap*, const char* key);

@@ -30,9 +30,20 @@ void _hashmap_item_destroy(struct _hashmap_item* item)
     free(item);
 }
 
+void _hashmap_init(hashmap* map) {
+    map->item_count = 0;
+    bucket_new(&map->items, 256, llist(struct _hashmap_item*));
+}
+
 void hashmap_new(hashmap* map)
 {
-    bucket_new(&map->items, 256, llist(struct _hashmap_item*));
+    _hashmap_init(map);
+}
+
+hashmap* hashmap_new2() {
+    hashmap* map = malloc(sizeof(hashmap));
+    _hashmap_init(map);
+    return map;
 }
 
 void hashmap_del_each(hashmap* map, void(cb)(void*))
@@ -45,13 +56,19 @@ void hashmap_del_each(hashmap* map, void(cb)(void*))
         llist_node* cur = llist_next(ref, NULL);
         while (cur != NULL) {
             struct _hashmap_item* data = llist_node_get(cur);
-            cb(data->value);
+            if (cb != NULL)
+                cb(data->value);
             _hashmap_item_destroy(data);
             cur = llist_next(ref, cur);
         }
         llist_del(ref);
     }
     bucket_del(&map->items);
+}
+
+void hashmap_del2_each(hashmap * map, void (cb)(void *)) {
+    hashmap_del_each(map, cb);
+    free(map);
 }
 
 size_t get_idx_from_hash(hashmap* map, hash_t h)
