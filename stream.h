@@ -83,3 +83,8 @@ size_t stream_fwrite(FILE*, uint8_t*, size_t);
 
 // turns fread into a stream_reader_t
 size_t stream_fread(FILE* file, uint8_t * buf, size_t bufsize);
+
+// reads ins using reader and writes it to all the following
+// outs outs_writer pairs.
+// last argument must be NULL
+void stream_tee(void* ins, stream_reader_t reader, ...);

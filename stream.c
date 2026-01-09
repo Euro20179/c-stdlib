@@ -1,4 +1,6 @@
 #include "stream.h"
+#include "array.h"
+#include <stdarg.h>
 #include <stdio.h>
 
 size_t stream_stream(void* readfrom, void* writeto,
@@ -38,4 +40,43 @@ size_t stream_fwrite(FILE* file, uint8_t * buf, size_t bufsize) {
 
 size_t stream_fread(FILE* file, uint8_t * buf, size_t bufsize) {
     return fread(buf, 1, bufsize, file);
+}
+
+void stream_tee(void *ins, stream_reader_t reader, ...) {
+    va_list ap;
+    va_start(ap, reader);
+
+    array* outs = array_new2(10, sizeof(void*));
+    array* writer_fns = array_new2(10, sizeof(stream_writer_t));
+
+    unsigned int writers = 0;
+    for(unsigned int i = 0 ;; i++) {
+        if ((i & 1) == 0) {
+            void* o = va_arg(ap, void*);
+            if(o == NULL) {
+                break;
+            }
+            array_append(outs, o);
+        } else {
+            array_append(writer_fns, va_arg(ap, stream_writer_t));
+            writers++;
+        }
+    }
+
+    uint8_t buf[256];
+    size_t bytes_read;
+    while((bytes_read = reader(ins, buf, 256)) != 0) {
+        for(unsigned int i = 0; i < writers; i++) {
+            stream_writer_t writer =
+                (stream_writer_t)*array_at(writer_fns, i);
+
+            void* into = *array_at(outs, i);
+            writer(into, buf, bytes_read);
+        }
+    }
+
+    array_del2(outs);
+    array_del2(writer_fns);
+
+    va_end(ap);
 }

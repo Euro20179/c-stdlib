@@ -1,4 +1,5 @@
 #include "string.h"
+#include <assert.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -116,16 +117,6 @@ int string_extend(string* str, size_t amount)
 {
     if (str->initialized != true)
         return -1;
-
-    if (str->allocated == 0) {
-        str->data = realloc(str->data, 1);
-        if (str->data == NULL) {
-            return -2;
-        }
-
-        str->allocated = amount;
-        return 0;
-    }
 
     int new_amount = str->allocated + amount;
     void* temp = realloc(str->data, new_amount);
@@ -467,7 +458,13 @@ size_t string_stream_read(string_stream* stream, uint8_t* out, size_t maxlen)
 size_t string_stream_write(string_stream* stream, uint8_t* in, size_t byte_count)
 {
     if (byte_count > stream->str->allocated - stream->pos || stream->pos > stream->str->allocated) {
-        if (string_extend(stream->str, stream->str->allocated * 2 + (stream->str->allocated - string_len(stream->str))) < 0) {
+        size_t extendby = stream->str->allocated * 2 + (stream->str->allocated - string_len(stream->str));
+
+        if (extendby == 0) {
+            extendby = 1;
+        }
+
+        if (string_extend(stream->str, extendby) < 0) {
             return 0;
         }
     }
