@@ -70,6 +70,8 @@ mktest(test_stream_multiple, {
     stream_n(f, ostream, stream_fread, string_stream_write, 3);
     t("read string is 'This i'", "%d",
             string_eq(ostr, "This i"), eq, 1);
+
+    remove("./test_stream_multiple");
 })
 
 mktest(test_stream_tee, {
@@ -106,12 +108,47 @@ mktest(test_stream_tee, {
     string_del2(out2);
 });
 
+mktest(test_stream_ntee, {
+    string* in = string_new2(10);
+    string_set(in, "Hello", 5);
+
+    string* out1 = string_new2(0);
+    string* out2 = string_new2(0);
+
+    string_stream* ins = string_stream_open(in);
+
+    string_stream* outs1 = string_stream_open(out1);
+    string_stream* outs2 = string_stream_open(out2);
+
+    stream_ntee(ins, reader_fn(string_stream_read), 3, (stream_tee_output[]){
+        { outs1, writer_fn(string_stream_write) },
+        { outs2, writer_fn(string_stream_write) },
+        NULL
+    });
+
+    string_concat_char(out2, 'a');
+
+    string_stream_close(outs1);
+    string_stream_close(outs2);
+    string_stream_close(ins);
+    string_del2(in);
+
+    t("out1 is Hel", "%d",
+          string_eq(out1, "Hel"), eq, 1);
+    t("out2 is Hela", "%d",
+          string_eq(out2, "Hela"), eq, 1);
+
+    string_del2(out1);
+    string_del2(out2);
+})
+
 
 int main() {
     TEST(test_stream_fwrite);
     TEST(test_rand_bytes);
     TEST(test_stream_multiple);
     TEST(test_stream_tee);
+    TEST(test_stream_ntee);
 
     printf("\n--------------------\n\x1b[32;1m[✓]\x1b[0m %zu \x1b[31;1m[✗]\x1b[0m %zu\n", pass_count, err_count);
 }

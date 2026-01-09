@@ -94,3 +94,8 @@ typedef struct {
 // outs outs_writer pairs.
 // last item in writers must be NULL
 void stream_tee(void* ins, stream_reader_t reader, stream_tee_output writers[]);
+
+// similar to stream_tee, but read at most n bytes from ins
+// RETURNS:
+// the amount of bytes read
+size_t stream_ntee(void* ins, stream_reader_t reader, size_t n, stream_tee_output writers[]);
