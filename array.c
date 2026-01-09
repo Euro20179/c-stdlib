@@ -1,4 +1,5 @@
 #include "array.h"
+#include "string.h"
 #include "iter.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -102,4 +103,26 @@ void array_iter(array* arr, struct iterable_t* i)
 void* array_next(array* arr)
 {
     return array_at(arr, ((array*)arr)->iter_pos++);
+}
+
+size_t array_stream_split_writer(array_stream_splitter* info,
+        uint8_t* buf, size_t bufsize) {
+    array* arr = info->arr;
+
+    //bootstrap
+    if(array_len(arr) == 0) {
+        array_append(arr, string_new2(1));
+    }
+
+    string* cur_string = *(string**)array_at(arr, array_len(arr) - 1);
+    for(size_t i = 0; i < bufsize; i++) {
+        if (buf[i] == info->byte_delim) {
+            cur_string = string_new2(1);
+            array_append(arr, cur_string);
+            continue;
+        }
+
+        string_concat_char(cur_string, buf[i]);
+    }
+    return bufsize;
 }

@@ -53,6 +53,15 @@ static char assert_text_buf[256];
     printf("\t\x1b[32;1m[✓]\x1b[0m subtest: %s\n\t\t" #left " " #testty " " #right "\n", name); \
 }
 
+#define ts(name, ty, left, testty, right) { \
+    bool n = assert##testty(left, right, ty); \
+    if(n == 0) { \
+        err_count++;\
+        return assert_text_buf; \
+    } \
+    pass_count++;\
+}
+
 /*
  * vim: ft=c
  * */
