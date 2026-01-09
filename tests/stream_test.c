@@ -84,10 +84,11 @@ mktest(test_stream_tee, {
     string_stream* outs1 = string_stream_open(out1);
     string_stream* outs2 = string_stream_open(out2);
 
-    stream_tee(ins, reader_fn(string_stream_read),
-          outs1, writer_fn(string_stream_write),
-          outs2, writer_fn(string_stream_write),
-          NULL);
+    stream_tee(ins, reader_fn(string_stream_read), (stream_tee_output[]){
+        { outs1, writer_fn(string_stream_write) },
+        { outs2, writer_fn(string_stream_write) },
+        NULL
+    });
 
     string_concat_char(out2, 'a');
 
