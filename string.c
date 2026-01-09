@@ -118,7 +118,7 @@ int string_extend(string* str, size_t amount)
         return -1;
 
     if (str->allocated == 0) {
-        str->data = calloc(amount, 1);
+        str->data = realloc(str->data, 1);
         if (str->data == NULL) {
             return -2;
         }
