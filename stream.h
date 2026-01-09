@@ -99,3 +99,6 @@ void stream_tee(void* ins, stream_reader_t reader, stream_tee_output writers[]);
 // RETURNS:
 // the amount of bytes read
 size_t stream_ntee(void* ins, stream_reader_t reader, size_t n, stream_tee_output writers[]);
+
+// a writer that writes to the list of writers provided
+void stream_tee_writer(stream_tee_output writers[], uint8_t*, size_t);
