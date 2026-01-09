@@ -1,6 +1,5 @@
 #include "array.h"
-#include "string.h"
-#include "iter.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -95,6 +94,9 @@ size_t array_find(array* arr, void* p)
     return -1;
 }
 
+
+#ifndef STDLIB_ITER_OFF
+#include "iter.h"
 void array_iter(array* arr, struct iterable_t* i)
 {
     ((array*)arr)->iter_pos = 0;
@@ -104,7 +106,11 @@ void* array_next(array* arr)
 {
     return array_at(arr, ((array*)arr)->iter_pos++);
 }
+#endif
 
+#if !defined(STDLIB_STRING_OFF) && !defined(STDLIB_STREAM_OFF)
+
+#include "string.h"
 size_t array_stream_split_writer(array_stream_splitter* info,
         uint8_t* buf, size_t bufsize) {
     array* arr = info->arr;
@@ -126,3 +132,4 @@ size_t array_stream_split_writer(array_stream_splitter* info,
     }
     return bufsize;
 }
+#endif

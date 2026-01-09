@@ -10,7 +10,6 @@ to said type
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
-#include "iter.h"
 
 typedef struct {
     size_t len;
@@ -54,16 +53,25 @@ void array_clear(array*);
 ///returns (size_t)-1 if not found
 size_t array_find(array*, void* p);
 
-void* array_next(array*);
 
+#ifndef STDLIB_ITER_OFF
+#include "iter.h"
 void array_iter(array*, struct iterable_t*);
+void* array_next(array*);
+#endif
 
+#ifndef STDLIB_STREAM_OFF
 typedef struct {
     array* arr;
     uint8_t byte_delim;
 } array_stream_splitter;
 
+
+#ifndef STDLIB_STRING_OFF
 // splites bytes from a stream and saves them as string*s in the provided
 // array_stream_splitter->arr.
 size_t array_stream_split_writer(array_stream_splitter* info,
         uint8_t* buf, size_t bufsize);
+
+#endif
+#endif

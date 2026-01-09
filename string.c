@@ -417,8 +417,7 @@ bool string_eq(string* str, const char* cmp)
     return true;
 }
 
-// string stream stuff {{{
-
+#ifndef STDLIB_STREAM_OFF
 struct string_stream {
     string* str;
     size_t pos;
@@ -490,4 +489,5 @@ int string_stream_seek(string_stream* stream, size_t bytes)
     stream->pos += bytes;
     return 0;
 }
-// }}}
+#endif
+

@@ -239,7 +239,7 @@ mkstrtest(prepend, {
 
 mkstrtest(massive_data, {
     for(int i = 0; i < 100000; i++) {
-        string_concat(str, (char[]){random(), random(), random()}, 3);
+        string_concat(str, (char[]){rand(), rand(), rand()}, 3);
     }
     t("length should be 100000 * 3", "%lu",
             string_len(str), eq, 100000 * 3);

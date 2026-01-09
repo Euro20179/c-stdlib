@@ -1,6 +1,5 @@
 #pragma once
 
-#include "stream.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -18,6 +17,8 @@ typedef struct{
     bool initialized;
 } string;
 
+#ifndef STDLIB_STREAM_OFF
+#include "stream.h"
 typedef struct string_stream string_stream;
 
 string_stream* string_stream_open(string*);
@@ -29,6 +30,7 @@ size_t string_stream_write(string_stream*, uint8_t* in, size_t byte_count);
 
 // see seek FLAGS in stream.h for FLAGS
 int string_stream_seek(string_stream*, size_t bytes);
+#endif
 
 ///creates a new string
 ///set len to 0 or NULL, if you are unsure of the strings length

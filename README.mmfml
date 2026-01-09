@@ -61,3 +61,10 @@ foreach(int*, arr, array, {
 
 `cur` and `it` are magical vars that are created within the foreach macro scope.
 `cur` contains the current item, while `it` contains the iterator itself.
+
+= Feature Flags =
+If a module is included but not required to be included by another module it
+can be turned off.
+For example if you want to use `string.h` but not `stream.h` you can pass
+`-DSTDLIB_STREAM_OFF` to the compiler and stream will not be required in any
+other module where it is not required.
