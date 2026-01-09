@@ -7,7 +7,7 @@ if [ -n "$names" ]; then
         file="./tests/${name}_test.c"
         printf -- "--------------------\nDOING: %s\n---------------------\n" \
             "$name"
-        cc -o ./"$name".bin ./*.c "$file"
+        cc -std=c23 -o ./"$name".bin ./*.c "$file"
         ./"$name".bin
     done
 else
@@ -15,7 +15,7 @@ else
     for file in ./tests/*.c; do
         name=${file##*/}
         printf -- "--------------------\nDOING: %s\n---------------------\n" "$name"
-        gcc -o ./"$name".bin ./*.c "$file"
+        cc -std=c23 -o ./"$name".bin ./*.c "$file"
         ./"$name".bin
     done
 

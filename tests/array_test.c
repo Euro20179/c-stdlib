@@ -91,33 +91,9 @@ mkarrtest(string_arr, string*, {
 const char* test_stream_split() {
     array* arr = array_new2(1, sizeof(string*));
 
-    const char * data = R"(Line 0
-Line 1
-Line 2
-Line 3
-Line 4
-Line 5
-Line 6
-Line 7
-Line 8
-Line 9
-Line 10
-Line 11
-Line 12
-Line 13
-Line 14
-Line 15
-Line 16
-Line 17
-Line 18
-Line 19
-Line 20
-Line 21
-Line 22
-Line 23
-Line 24
-Line 25
-Line 26)";
+    const char data[] = {
+        #embed "./array_line_data.dat"
+    };
     string* ins = string_from_cstr(data, strlen(data));
 
     string_stream* instream = string_stream_open(ins);
